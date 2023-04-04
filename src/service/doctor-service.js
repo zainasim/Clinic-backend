@@ -64,3 +64,11 @@ export async function getDoctorByType(type) {
         throw new Error(error.message);
     }
 }
+
+export async function getTimeSlotData(id) {
+    try {
+        return await Doctor.findById({ _id: id}, { timing: 1, _id: 0});
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}

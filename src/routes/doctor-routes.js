@@ -1,6 +1,6 @@
 import express from 'express';
 import validateRequest from '../middleware/validateRequest.js';
-import { createDoctorHandler, updateDoctorTimeSlotHandler, getDoctorByIdHandler, getAllDoctorHandler, getDoctorByTypeHandler } from '../controller/doctor-controller.js';
+import { createDoctorHandler, updateDoctorTimeSlotHandler, getDoctorByIdHandler, getAllDoctorHandler, getDoctorByTypeHandler, getTimeSlotIdHandler } from '../controller/doctor-controller.js';
 import { createDoctorSchema, doctorTimingSchema, getByType } from '../schema/doctor-schema.js'
 
 const router = express.Router();
@@ -15,5 +15,7 @@ router.get('/getById/:id', getDoctorByIdHandler);
 router.get('/getAll', getAllDoctorHandler);
 
 router.get('/getByType/', getDoctorByTypeHandler);
+
+router.get('/getTimeSlot/:id', getTimeSlotIdHandler);
 
 export default router;
