@@ -1,5 +1,5 @@
 // import { omit } from 'lodash';
-import { create, getById } from '../service/patient-service.js';
+import { create, getById, getAllPatient, logout } from '../service/patient-service.js';
 import { validatePassword } from '../service/patient-service.js';
 import { createSession, createAccessToken } from '../service/session-service.js';
 import { sign } from '../utils/jwt-utils.js';
@@ -24,10 +24,10 @@ export async function patientLogIn(req, res) {
     }
 
     //create session
-    // const session = await createSession(patient._id, req.get('user-agent') || '');
+    const session = await createSession(patient._id, req.get('user-agent') || '');
 
     // //create Access Token
-    const accessToken = createAccessToken(patient);
+    const accessToken = createAccessToken(patient, session);
 
     // console.log(accessToken);
 
@@ -50,6 +50,24 @@ export async function getPatientById(req, res) {
     try {
         const patient = await getById(req.params.id);
         return res.send(patient);
+    } catch (error) {
+        return res.status(409).send(error.message);
+    }
+}
+
+export async function getAllPatientHandler(req, res) {
+    try {
+        const doctors = await getAllPatient();
+        return res.send(doctors);
+    } catch (error) {
+        return res.status(409).send(error.message);
+    }
+}
+
+export async function deletePatientHandler(req, res) {
+    try {
+        const user = await logout(req.params.id);
+        return res.send(user);
     } catch (error) {
         return res.status(409).send(error.message);
     }

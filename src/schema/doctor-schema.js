@@ -1,4 +1,4 @@
-import { object, string } from 'yup';
+import { object, string, date } from 'yup';
 
 export const createDoctorSchema = object({
     body: object({
@@ -14,15 +14,21 @@ export const doctorTimingSchema = object({
     body: object({
         timing: object().shape({
             timeSlot: string().required('time slot is required'),
-            value: string().required('value is required'),
+            patient_id: string().required('Patient Id is required'),
+            day: string().required('Day is required').min(1),
+            date: date().required('Date is required'),
         })
     })
 });
 
 
 
-// export const getById = object({
-//     params: object({
-//         id: mongoose.Types.ObjectId,
+// export const getByType = object({
+//     body: object({
+//         type: string().required('Doctor Type is required is rquired')
 //     })
 // });
+
+export const getByType = object().shape({
+    type: string().required(),
+});

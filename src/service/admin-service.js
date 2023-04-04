@@ -26,3 +26,11 @@ export async function validatePassword({ email, password }) {
         throw new Error(error.message);
     }
 }
+
+export async function getAll() {
+    try {
+        return await Admin.find();
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}

@@ -1,4 +1,5 @@
 import Patient from "../model/patient-model.js";
+import Session from "../model/session-model.js";
 
 
 export async function create(input) {
@@ -31,6 +32,22 @@ export async function validatePassword({ email, password }) {
 export async function getById(id) {
     try {
         return await Patient.findById(id);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export async function getAllPatient() {
+    try {
+        return await Patient.find();
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export async function logout(id) {
+    try {
+        return await Session.deleteOne({ _id: id });
     } catch (error) {
         throw new Error(error.message);
     }

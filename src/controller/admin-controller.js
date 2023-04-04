@@ -1,5 +1,5 @@
-import { create, validatePassword } from "../service/admin-service.js";
-import { createAccessToken } from "../service/session-service.js";
+import { create, validatePassword, getAll } from "../service/admin-service.js";
+import { createAccessToken, createSession } from "../service/session-service.js";
 
 export async function createAdmin(req, res) {
     try {
@@ -17,9 +17,20 @@ export async function adminLogIn(req, res) {
     if (!admin) {
         return res.status(401).send('Invalid Credentials');
     }
-
+    //create session
+    const session = await createSession(admin._id, req.get('user-agent') || '');
+    
     // //create Access Token
-    const accessToken = createAccessToken(admin);
+    const accessToken = createAccessToken(admin, session);
 
     return res.send({ accessToken });
+}
+
+export async function getAllAdmin(req, res) {
+    try {
+        const doctors = await getAll();
+        return res.send(doctors);
+    } catch (error) {
+        return res.status(409).send(error.message);
+    }
 }

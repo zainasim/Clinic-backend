@@ -15,17 +15,27 @@ export async function updateDoctorTimeSlot(body, id) {
         if(!doctor) {
             throw new Error('Doctor with this id does not exist');
         }
-        const filter = {
-            timing: { $elemMatch: { timeSlot: body.timing.timeSlot, value: '' } }
-        };
-
-        const update = { $set: { "timing.$.value": new ObjectId(body.timing.value) } };
-        const options = { new: true };
-        const updatedDoctor = await Doctor.findOneAndUpdate(filter, update, options);
-        if(!updatedDoctor) {
-            throw new Error('This slot is already filled');
+        const timeSlotObject = {
+            timeSlot: body.timing.timeSlot,
+            patient_id: new ObjectId(body.timing.patient_id),
+            day: body.timing.day,
+            date: body.timing.date,
         }
+        var updatedDoctor; 
+        const options = { new: true };
+        const update = { $push: { timing: timeSlotObject } };
+        if (doctor.timing.length !== 0) {
+            const filter = {
+                timing: { $elemMatch: { timeSlot: body.timing.timeSlot, date: body.timing.date, day: body.timing.day } }
+            };
+            updatedDoctor = await Doctor.findOne(filter);
+            if(updatedDoctor) {
+                throw new Error('This slot is already filled');
+            }
+        }
+        updatedDoctor = await Doctor.findOneAndUpdate({ _id: new ObjectId(id) }, update, options);
         return updatedDoctor;
+
     } catch (error) {
         throw new Error(error.message);
     }
@@ -42,6 +52,22 @@ export async function getDoctorById(id) {
 export async function getAllDoctor() {
     try {
         return await Doctor.find();
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export async function getDoctorByType(type) {
+    try {
+        return await Doctor.find({ specializaion: type});
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export async function getTimeSlotData(id) {
+    try {
+        return await Doctor.findById({ _id: id}, { timing: 1, _id: 0});
     } catch (error) {
         throw new Error(error.message);
     }

@@ -5,6 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,12 +15,14 @@
     "body-parser": "^1.20.2",
     "chalk": "^5.2.0",
     "ckey": "^1.0.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "mongoose": "^7.0.1",
     "nodemon": "^2.0.21",
+    "url": "^0.11.0",
     "yup": "^1.0.2"
   },
   "devDependencies": {
