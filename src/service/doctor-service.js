@@ -1,5 +1,7 @@
 import Doctor from "../model/doctor-model.js";
 import { ObjectId } from 'mongodb';
+import config from '../config/config.js';
+import transporter from "../config/emailConfig.js";
 
 export async function createDoctor(input) {
     try {
@@ -34,11 +36,28 @@ export async function updateDoctorTimeSlot(body, id) {
             }
         }
         updatedDoctor = await Doctor.findOneAndUpdate({ _id: new ObjectId(id) }, update, options);
+        await sendEmailToPatient(body, updatedDoctor);
         return updatedDoctor;
 
     } catch (error) {
         throw new Error(error.message);
     }
+}
+
+async function sendEmailToPatient(body, doctor) {
+    const mailOptions = {
+        from: config.user.GMAIL_USER,
+        to: 'kojet68001@jthoven.com',
+        subject: 'subject',
+        html: 'Hi,<br> your appointment has been booked wth Dr,' + doctor.firstName + ' ' + doctor.lastName + ' for time slot ' + body.timing.timeSlot,
+    };
+    transporter.sendMail(mailOptions, (err) => {
+        if(err) {
+            console.error(err);
+        } else {
+            console.log("email sent successfully");
+        }
+    });
 }
 
 export async function getDoctorById(id) {
