@@ -10,6 +10,11 @@ const PatientSchema = new mongoose.Schema(
         gender: { type: String, required: true },
         dateOfBirth: { type: Date, required: true},
         password: { type: String, required: true },
+        doctorIds: {
+            type: [],
+            required: false,
+            default: [],
+        },
     },
     {
         timestamps: true
