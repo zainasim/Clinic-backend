@@ -1,5 +1,5 @@
 // import { omit } from 'lodash';
-import { create, getById, getAllPatient, logout } from '../service/patient-service.js';
+import { create, getById, getAllPatient, logout, getDoctorInfo } from '../service/patient-service.js';
 import { validatePassword } from '../service/patient-service.js';
 import { createSession, createAccessToken } from '../service/session-service.js';
 import { sign } from '../utils/jwt-utils.js';
@@ -67,6 +67,15 @@ export async function getAllPatientHandler(req, res) {
 export async function deletePatientHandler(req, res) {
     try {
         const user = await logout(req.params.id);
+        return res.send(user);
+    } catch (error) {
+        return res.status(409).send(error.message);
+    }
+}
+
+export async function getDoctorInfoHandler(req, res) {
+    try {
+        const user = await getDoctorInfo(req.params.id);
         return res.send(user);
     } catch (error) {
         return res.status(409).send(error.message);
