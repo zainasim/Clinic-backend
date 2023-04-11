@@ -2,6 +2,7 @@ import Doctor from "../model/doctor-model.js";
 import { ObjectId } from 'mongodb';
 import config from '../config/config.js';
 import transporter from "../config/emailConfig.js";
+import Patient from "../model/patient-model.js";
 
 export async function createDoctor(input) {
     try {
@@ -17,6 +18,18 @@ export async function updateDoctorTimeSlot(body, id) {
         if(!doctor) {
             throw new Error('Doctor with this id does not exist');
         }
+        const patient = await Patient.findById(body.timing.patient_id);
+        if(!patient) {
+            throw new Error('Patient with this id does not exist');
+        }
+        // const timeslotInfo = await Doctor.findOne({
+        //     _id: id,
+        //     timing: {
+        //         $elemMatch: {
+        //             patient_id: new ObjectId(body.timing.patient_id)
+        //         }
+        //     }
+        // });
         const timeSlotObject = {
             timeSlot: body.timing.timeSlot,
             patient_id: new ObjectId(body.timing.patient_id),
@@ -25,7 +38,8 @@ export async function updateDoctorTimeSlot(body, id) {
         }
         var updatedDoctor; 
         const options = { new: true };
-        const update = { $push: { timing: timeSlotObject } };
+        const updateDoctor = { $push: { timing: timeSlotObject } };
+        const updatePatient = { $push: { doctorIds: new ObjectId(id) } };
         if (doctor.timing.length !== 0) {
             const filter = {
                 timing: { $elemMatch: { timeSlot: body.timing.timeSlot, date: body.timing.date, day: body.timing.day } }
@@ -35,9 +49,13 @@ export async function updateDoctorTimeSlot(body, id) {
                 throw new Error('This slot is already filled');
             }
         }
-        updatedDoctor = await Doctor.findOneAndUpdate({ _id: new ObjectId(id) }, update, options);
+        updatedDoctor = await Doctor.findOneAndUpdate({ _id: new ObjectId(id) }, updateDoctor, options);
+        await Patient.findOneAndUpdate({ _id: new ObjectId(body.timing.patient_id) }, updatePatient, options);
         await sendEmailToPatient(body, updatedDoctor);
         return updatedDoctor;
+        // if(!timeslotInfo) {
+        // }
+        // throw new Error('You have already booked a slot');
 
     } catch (error) {
         throw new Error(error.message);
