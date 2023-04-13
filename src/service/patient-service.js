@@ -55,6 +55,7 @@ export async function logout(id) {
 
 export async function getDoctorInfo(patient_id) {
     try {         
+        const response = [];
         const patient = await Patient.aggregate([
             {
               $match: { _id: new ObjectId(patient_id) },
@@ -81,13 +82,24 @@ export async function getDoctorInfo(patient_id) {
             },
         ]);
         for(const drInfo of patient) {
-            for (let i = drInfo.timing.length - 1; i >= 0; i--) {
+            for (let i = 0; i <= drInfo.timing.length - 1; i++) {
                 if (drInfo.timing[i].patient_id.toString() !== patient_id) {
                     drInfo.timing.splice(i, 1);
                 }
+                else {
+                    const obj = {
+                        firstName: drInfo.firstName,
+                        lastName: drInfo.lastName,
+                        specializaion: drInfo.specializaion,
+                        day: drInfo.timing[i].day,
+                        timeslot: drInfo.timing[i].timeSlot,
+                        date: drInfo.timing[i].date,
+                    }
+                    response.push(obj);
+                }
             }
         }
-        return patient;
+        return response;
     } catch (error) {
         throw new Error(error.message);
     }
