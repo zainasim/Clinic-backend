@@ -80,3 +80,13 @@ export async function getDoctorInfo(patient_id) {
         throw new Error(error.message);
     }
 }
+
+export async function getBookedInfo() {
+    try {
+        const filter = { "doctorIds": { "$ne": [] } };
+        return await Patient.find(filter);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+

@@ -8,7 +8,7 @@ const router = express.Router();
 //To create Doctor
 router.post('/createDoctor', validateRequest(createDoctorSchema), createDoctorHandler);
 
-router.patch('/updateTimeSlot/:id', validateRequest(doctorTimingSchema), updateDoctorTimeSlotHandler);
+router.post('/updateTimeSlot/:id', validateRequest(doctorTimingSchema), updateDoctorTimeSlotHandler);
 
 router.get('/getById/:id', getDoctorByIdHandler);
 
