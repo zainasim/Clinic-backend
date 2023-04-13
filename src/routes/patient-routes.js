@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPatient, getPatientById, patientLogIn, getAllPatientHandler, deletePatientHandler, getDoctorInfoHandler } from '../controller/patient-controller.js';
+import { createPatient, getPatientById, patientLogIn, getAllPatientHandler, deletePatientHandler, getDoctorInfoHandler,getBookedInfoHandler } from '../controller/patient-controller.js';
 import { authorizeUser } from '../middleware/authorization.js';
 import validateRequest from '../middleware/validateRequest.js';
 import { createPatientSchema, getById, loginPatientSchema } from '../schema/patient-schema.js'
@@ -19,5 +19,7 @@ router.get('/getAll', getAllPatientHandler);
 router.delete('/logout/:id', deletePatientHandler);
 
 router.get('/doctorInfo/:id', getDoctorInfoHandler);
+
+router.get('/bookedInfo', getBookedInfoHandler);
 
 export default router;
