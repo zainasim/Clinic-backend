@@ -12,8 +12,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const port = 3000;
-
 dbConnection()
     .then(() => {
         startServer();
@@ -24,7 +22,7 @@ dbConnection()
 const startServer = () => {
     app.use('/api/v1', routes);
 
-    app.listen(port, () => {
+    app.listen(config.server.port, () => {
         Logging.info(`Server is listening on port ${config.server.port}`);
     });
 };
