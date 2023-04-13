@@ -66,9 +66,21 @@ export async function getDoctorInfo(patient_id) {
                 foreignField: '_id',
                 as: 'doctorInfo',
               },
-            }
+            },
+            {
+                $unwind: '$doctorInfo',
+            },
+            {
+                $project: {
+                    _id: 0,
+                    firstName: '$doctorInfo.firstName',
+                    lastName: '$doctorInfo.lastName',
+                    specializaion: '$doctorInfo.specializaion',
+                    timing: '$doctorInfo.timing',
+                },
+            },
         ]);
-        for(const drInfo of patient[0].doctorInfo) {
+        for(const drInfo of patient) {
             for (let i = drInfo.timing.length - 1; i >= 0; i--) {
                 if (drInfo.timing[i].patient_id.toString() !== patient_id) {
                     drInfo.timing.splice(i, 1);
